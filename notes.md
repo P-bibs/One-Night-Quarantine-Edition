@@ -9,6 +9,7 @@
   * "introduction"
     * arg: player_name
   * "begin_game"
+  * "restart_game
   * "noOp
 
 * "character_select"

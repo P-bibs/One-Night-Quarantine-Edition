@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { DO_DEPLOY } from '../environmentVariables'
 import "../styles/BasePageStyle.scss"
 
 interface IProps {
@@ -13,7 +13,7 @@ export class BasePageView extends React.Component<IProps> {
         return (
             <div className="base-page">
                 <div className="top-bar">
-                    <div className="logo">
+                    <div className="logo" onClick={() => window.location.href = DO_DEPLOY ? "https://paulbiberstein.me/OneNight/" : "http://localhost:8080/"}>
                         One Night Quarantine Edition
                     </div>
                 </div>

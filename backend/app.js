@@ -8,7 +8,10 @@ const server = http.createServer((request, response) => {
   request.addListener('end', function () {
     fileServer.serve(request, response, function (e, res) {
         if (e && (e.status === 404)) { // If the file wasn't found
-            fileServer.serveFile('/index.html', 404, {}, request, response);
+            console.log(`Got request for ${request.url} and couldn't find it`)
+            if (!(new URL(request, `http://${request.headers.host}`).pathname.includes("data"))) {
+              fileServer.serveFile('/index.html', 404, {}, request, response);
+            }
         }
     });
   }).resume();
@@ -58,7 +61,7 @@ function createGame(code) {
   }
   
   socket_server = new WebSocket.Server({ noServer: true })
-
+  socket_server.on('error', (e) => console.log(e) )
   socket_server.on('connection', (ws) => {
     ws.send(JSON.stringify({
       message_type: "game_state_update",

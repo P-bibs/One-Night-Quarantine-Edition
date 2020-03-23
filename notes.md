@@ -7,7 +7,7 @@
       * parameters
 * "control"
   * "introduction"
-    * [player_name]
+    * arg: player_name
   * "begin_game"
 
 * "character_select"
@@ -36,13 +36,16 @@
       * arg: player_number
     * "random"
 
+* "game_state_update"
+  * arg: game_state
+
 # Object Types
 
 * game
   * code: string
   * state: string
   * players: player[]
-  * characters: string[]
+  * characters_enabled: string[]
 
 * player
   * name: string

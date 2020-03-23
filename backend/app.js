@@ -1,8 +1,18 @@
 const http = require('http');
 const WebSocket = require('ws');
-const url = require('url');
+var static =  require('node-static');
 
-const server = http.createServer();
+var fileServer = new static.Server("./build");
+
+const server = http.createServer((request, response) => {
+  request.addListener('end', function () {
+    fileServer.serve(request, response, function (e, res) {
+        if (e && (e.status === 404)) { // If the file wasn't found
+            fileServer.serveFile('/index.html', 404, {}, request, response);
+        }
+    });
+  }).resume();
+});
 
 wsServers = {}
 
@@ -69,15 +79,22 @@ function createGame(code) {
         } else if (message.message_subtype == "begin_game") {
           begin_game(game)
           socket_server.clients.forEach(client => {
-            console.log("Sending game data")
-            console.log(game)
             client.send(JSON.stringify({
               message_type: "game_state_update",
               data: game
             }));
           });
           return
-        }
+        } else if (message.message_subtype == "restart_game") {
+          restartGame(game)
+          socket_server.clients.forEach(client => {
+            client.send(JSON.stringify({
+              message_type: "game_state_update",
+              data: game
+            }));
+          });
+          return
+        } 
       } else if (message.message_type == "character_select") {
         character_select(game, message.action_type, message.data)
       } else if (message.message_type == "card_action") {
@@ -111,8 +128,7 @@ function shuffle(arr) {
 }
 
 function begin_game(game) {
-  console.log("Beginning game")
-
+  console.log(`Beginning game ${game.code}`)
 
   // add the center cards as players with no name
   for (let i = 0; i < 3; i++) {
@@ -131,6 +147,13 @@ function begin_game(game) {
   })
 
   game.state = "game"
+}
+
+function restartGame(game) {
+  console.log(`Restarting Game ${game.code}`)
+  game.state = "setup"
+  game.players = []
+  game.characters_enabled = []
 }
 
 function character_select(game, action, character_name) {

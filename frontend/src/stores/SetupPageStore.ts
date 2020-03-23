@@ -24,8 +24,8 @@ export class SetupPageStore {
             return
         }
         if (DO_DEPLOY) {
-            console.log(`ws://${url.hostname}/OneNight/data?code=${this.code}`)
-            this.socket = new WebSocket(`ws://${url.hostname}/OneNight/data?code=${this.code}`)
+            console.log(`wss://${url.hostname}/OneNight/data?code=${this.code}`)
+            this.socket = new WebSocket(`wss://${url.hostname}/OneNight/data?code=${this.code}`)
         } else {
             console.log(`ws://${url.hostname}:8080/data?code=${this.code}`)
             this.socket = new WebSocket(`ws://${url.hostname}:8080/data?code=${this.code}`)

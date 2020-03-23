@@ -14,8 +14,9 @@ import { WelcomePageView } from './views/WelcomePageView'
 
 const App: React.FC = () => {
   let url = new URL(window.location.href)
+  console.log(url)
   let body;
-  if (url.pathname === "/" || url.pathname === "/OneNight") {
+  if (url.pathname === "/" || url.pathname === "/OneNight/") {
     body = <WelcomePageView store={new WelcomePageStore({})} />
   } else if (url.pathname === "/setup" || url.pathname === "/OneNight/setup") {
     body = <SetupPageView store={new SetupPageStore({})} />

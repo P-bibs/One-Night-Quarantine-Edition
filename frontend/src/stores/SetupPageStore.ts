@@ -39,6 +39,7 @@ export class SetupPageStore {
             }
             if (this.gameState.state === "game") {
                 let newUrl = new URL(window.location.href)
+                this.socket.close()
                 newUrl.pathname = '/game'
                 newUrl.search = `name=${this.name}&code=${this.code}`
                 window.location.href = newUrl.href
@@ -65,7 +66,7 @@ export class SetupPageStore {
 
     readonly characters: string[][] = [
         [ "Doppelganger", "Werewolf 1", "Werewolf 2", "Minion", "Mason 1", "Mason 2", "Seer", "Robber", "Troublemaker", "Drunk", "Insomniac", "Villager 1", "Villager 2", "Villager 3", "Hunter", "Tanner" ],
-        [ "Sentinel", "Alpha Wolf", "Mystic Wolf", "Apprentice Seer", "P.I", "Witch", "Village Idiot", "Revealer", "Curator", "Dream Wolf", "Bodyguard"],
+        [ "Sentinel", "Alpha Wolf", "Mystic Wolf", "Apprentice Seer", "P.I.", "Witch", "Village Idiot", "Revealer", "Curator", "Dream Wolf", "Bodyguard"],
         ["Oracle", "Alien 1", "Alien 2", "Synthetic Alien", "Cow", "Groob", "Zerb", "Leader", "Psychic", "Rascal", "Exposer", "Blob", "Mortician"]
     ]
     readonly characterGroupLabels: string[] = [

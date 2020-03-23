@@ -7,19 +7,35 @@ const server = http.createServer();
 wsServers = {}
 
 server.on('upgrade', function upgrade(request, socket, head) {
-  const params = url.parse(request.url).searchParams;
-  code = searchParams.get("code")
+  const parsed = new URL(request.url, `http://${request.headers.host}`);
+  if (parsed.pathname !== "/data") {
+    return
+  }
+  let code = parsed.searchParams.get("code")
 
+  console.log(`Attempting to connect user with code ${code}`)
   if (code in wsServers) {
     wsServers[code].handleUpgrade(request, socket, head, function done(ws) {
-      wss1.emit('connection', ws, request);
+      wsServers[code].emit('connection', ws, request);
     });
   } else {
-    wsServers[code] = new WebSocket.Server({ noServer: true });
+    wsServers[code] = createGame(code)
     wsServers[code].handleUpgrade(request, socket, head, function done(ws) {
       wsServers[code].emit('connection', ws, request);
     });
   }
+
+  // clean up old servers
+  // for (const key in wsServers) {
+  //   if (wsServers.hasOwnProperty(key)) {
+  //     console.log(`Deleting server ${key}`)
+  //     const server = wsServers[key];
+  //     if (server.clients.length == 0) {
+  //       server.close()
+  //     }
+  //     delete wsServers[key];
+  //   }
+  // }
 });
 
 function createGame(code) {
@@ -27,23 +43,24 @@ function createGame(code) {
     code: code,
     state: "setup",
     players: [],
-    characters: []
+    characters_enabled: []
   }
   
-  server = new WebSocket.Server({ noServer: true })
+  socket_server = new WebSocket.Server({ noServer: true })
 
-  server.on('connection', (ws) => {
+  socket_server.on('connection', (ws) => {
     ws.on('message', (data) => {
 
       message = JSON.parse(data)
       if (message.message_type == "control")  {
         if (message.message_subtype == "introduction") {
+          console.log(`Received introduction message from ${message.data}`)
           new_player = {
-            name: message.player_name,
+            name: message.data,
             isThumbOut: false
           }
           game.players.push(new_player)
-        } else if (message.message_subtype == "begin") {
+        } else if (message.message_subtype == "begin_game") {
           begin_game(game)
         }
       } else if (message.message_type == "character_select") {
@@ -55,14 +72,18 @@ function createGame(code) {
       }
 
       // Broadcast game to players after update
-      server.clients.forEach(client => {
-        client.send(JSON.stringify(game));
+      socket_server.clients.forEach(client => {
+        console.log("Sending game data")
+        console.log(game)
+        client.send(JSON.stringify({
+          message_type: "game_state_update",
+          data: game
+        }));
       });
     })
   });
 
-  game.server = server
-  return game
+  return socket_server
 }
 
 function shuffle(arr) {
@@ -77,16 +98,19 @@ function shuffle(arr) {
 }
 
 function begin_game(game) {
+  console.log("Beginning game")
+
+
   // add the center cards as players with no name
   for (let i = 0; i < 3; i++) {
     game.players.push({name: "", isThumbOut: false})
   }
 
   // assign characters
-  let characters = shuffle(game.characters)
+  let characters_enabled = shuffle(game.characters_enabled)
   game.players.forEach((player, i) => {
     player.card = {
-      character: characters[i],
+      character: characters_enabled[i],
       isExposed: false,
       isHighlighted: false,
       tokens: []
@@ -97,10 +121,10 @@ function begin_game(game) {
 }
 
 function character_select(game, action, character_name) {
-  if (action == "add" && !(character_name in game.characters)) {
-    game.characters.push(character_name)
+  if (action == "add" && !(character_name in game.characters_enabled)) {
+    game.characters_enabled.push(character_name)
   } else if (action == "remove") {
-    game.characters = game.characters.filter(x => x != character_name)
+    game.characters_enabled = game.characters_enabled.filter(x => x != character_name)
   }
 }
 
@@ -146,3 +170,5 @@ function player_action(game, sub_action, action_type, data) {
 }
 
 server.listen(8080);
+
+console.log("server listening on port 8080")

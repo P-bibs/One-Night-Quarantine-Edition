@@ -15,11 +15,11 @@ import { WelcomePageView } from './views/WelcomePageView'
 const App: React.FC = () => {
   let url = new URL(window.location.href)
   let body;
-  if (url.pathname === "/") {
+  if (url.pathname === "/" || url.pathname === "/OneNight") {
     body = <WelcomePageView store={new WelcomePageStore({})} />
-  } else if (url.pathname === "/setup") {
+  } else if (url.pathname === "/setup" || url.pathname === "/OneNight/setup") {
     body = <SetupPageView store={new SetupPageStore({})} />
-  } else if (url.pathname === "/game") {
+  } else if (url.pathname === "/game" || url.pathname === "/OneNight/game") {
     body = <GamePageView store={new GamePageStore({})} />
   }
            

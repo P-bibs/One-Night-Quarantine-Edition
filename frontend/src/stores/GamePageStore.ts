@@ -1,4 +1,5 @@
 import { observable, action } from "mobx";
+import { DO_DEPLOY } from '../environmentVariables'
 
 const DEBUG = false;
 export class GamePageStore {
@@ -17,8 +18,15 @@ export class GamePageStore {
             }
             return
         }
-        console.log(`attempting to connect to ws://${url.hostname}:8080/data?code=${this.code}`)
-        this.socket = new WebSocket(`ws://${url.hostname}:8080/data?code=${this.code}`)
+        if (DO_DEPLOY) {
+            console.log(`attempting to connect to ws://${url.hostname}/OneNight/data?code=${this.code}`)
+            this.socket = new WebSocket(`ws://${url.hostname}/OneNight/data?code=${this.code}`)
+        } else{
+            console.log(`attempting to connect to ws://${url.hostname}:8080/data?code=${this.code}`)
+            this.socket = new WebSocket(`ws://${url.hostname}:8080/data?code=${this.code}`)
+
+        }
+        
         this.socket.onopen = (event) => {
             this.sendMessage({
                 message_type: "control",
@@ -35,7 +43,7 @@ export class GamePageStore {
             if (this.gameState.state === "setup") {
                 let newUrl = new URL(window.location.href)
                 this.socket.close()
-                newUrl.pathname = '/setup'
+                newUrl.pathname = DO_DEPLOY ? '/OneNight/setup' : '/setup'
                 newUrl.search = `name=${this.name}&code=${this.code}`
                 window.location.href = newUrl.href
             }

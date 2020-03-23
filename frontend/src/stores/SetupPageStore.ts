@@ -1,5 +1,5 @@
 import { computed, observable, action } from "mobx";
-
+import { DO_DEPLOY } from '../environmentVariables'
 const DEBUG = false;
 export class SetupPageStore {
 
@@ -23,6 +23,10 @@ export class SetupPageStore {
             }
             return
         }
+        if (DO_DEPLOY) {
+            console.log(`ws://${url.hostname}:8080/data?code=${this.code}`)
+            this.socket = new WebSocket(`ws://${url.hostname}:8080/data?code=${this.code}`)
+        }
         console.log(`ws://${url.hostname}:8080/data?code=${this.code}`)
         this.socket = new WebSocket(`ws://${url.hostname}:8080/data?code=${this.code}`)
         this.socket.onopen = (event) => {
@@ -40,7 +44,7 @@ export class SetupPageStore {
             if (this.gameState.state === "game") {
                 let newUrl = new URL(window.location.href)
                 this.socket.close()
-                newUrl.pathname = '/game'
+                newUrl.pathname = DO_DEPLOY ? '/OneNight/game' : '/game'
                 newUrl.search = `name=${this.name}&code=${this.code}`
                 window.location.href = newUrl.href
             }

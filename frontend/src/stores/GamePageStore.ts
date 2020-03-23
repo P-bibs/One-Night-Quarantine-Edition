@@ -32,6 +32,14 @@ export class GamePageStore {
                 this.gameState = message.data;
             }
 
+            if (this.gameState.state === "setup") {
+                let newUrl = new URL(window.location.href)
+                this.socket.close()
+                newUrl.pathname = '/setup'
+                newUrl.search = `name=${this.name}&code=${this.code}`
+                window.location.href = newUrl.href
+            }
+
             // Set whether or not this player is in audience
             if (this.gameState.players.filter((x: any) => x.name === this.name).length === 0) {
                 this.isAudience = true;
@@ -191,6 +199,14 @@ export class GamePageStore {
         } else {
             this.dropdownCardNumber = cardNumber
         }
+    }
+
+    @action
+    restartGame() {
+        this.sendMessage({
+            message_type: "control",
+            message_subtype: "restart_game"
+        })
     }
 
     @action

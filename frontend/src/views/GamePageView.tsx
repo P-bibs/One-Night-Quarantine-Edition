@@ -32,9 +32,19 @@ export class GamePageView extends React.Component<IProps> {
                         <p>{store.initialCharacter}</p>
                         <h2>Your tokens:</h2>
                         {store.tokens.map(token => <p>{token}</p>)}
+                        <h2>Enabled Characters</h2>
+                        {store.gameState.characters_enabled.reduce((n: any,a: any) =>
+                            a + ", " +  n
+                        , "")}
+                        <br /> <br />
                         <Button variant="primary"
                             onClick={ () => store.toggleThumb(store.playerCardNumber) }>
                                 {store.isThumbOut ? "Hide Thumb" : "Stick Out Thumb" }
+                        </Button>
+                        <br />
+                        <Button variant="danger"
+                            onClick={ store.restartGame.bind(store) }>
+                                Restart Game
                         </Button>
                     </div>
                     }

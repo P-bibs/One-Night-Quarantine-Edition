@@ -25,7 +25,7 @@ export class WelcomePageStore {
     @action
     newGame() {
         if (this.name !== "") {
-            window.location.href = DO_DEPLOY ? `/OneNight/setup?name=${this.name}` ? `/setup?name=${this.name}`
+            window.location.href = DO_DEPLOY ? `/OneNight/setup?name=${this.name}` : `/setup?name=${this.name}`
         }
     }
 

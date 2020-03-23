@@ -14,6 +14,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
   let code = parsed.searchParams.get("code")
 
   console.log(`Attempting to connect user with code ${code}`)
+  console.log(request.url)
   if (code in wsServers) {
     wsServers[code].handleUpgrade(request, socket, head, function done(ws) {
       wsServers[code].emit('connection', ws, request);
@@ -49,11 +50,16 @@ function createGame(code) {
   socket_server = new WebSocket.Server({ noServer: true })
 
   socket_server.on('connection', (ws) => {
+    ws.send(JSON.stringify({
+      message_type: "game_state_update",
+      data: game
+    }))
+    
     ws.on('message', (data) => {
 
       message = JSON.parse(data)
       if (message.message_type == "control")  {
-        if (message.message_subtype == "introduction") {
+        if (message.message_subtype == "introduction" && game.state == "setup") {
           console.log(`Received introduction message from ${message.data}`)
           new_player = {
             name: message.data,
@@ -62,6 +68,15 @@ function createGame(code) {
           game.players.push(new_player)
         } else if (message.message_subtype == "begin_game") {
           begin_game(game)
+          socket_server.clients.forEach(client => {
+            console.log("Sending game data")
+            console.log(game)
+            client.send(JSON.stringify({
+              message_type: "game_state_update",
+              data: game
+            }));
+          });
+          return
         }
       } else if (message.message_type == "character_select") {
         character_select(game, message.action_type, message.data)
@@ -73,8 +88,6 @@ function createGame(code) {
 
       // Broadcast game to players after update
       socket_server.clients.forEach(client => {
-        console.log("Sending game data")
-        console.log(game)
         client.send(JSON.stringify({
           message_type: "game_state_update",
           data: game
@@ -103,7 +116,7 @@ function begin_game(game) {
 
   // add the center cards as players with no name
   for (let i = 0; i < 3; i++) {
-    game.players.push({name: "", isThumbOut: false})
+    game.players.push({name: `Center ${i+1}`, isThumbOut: false})
   }
 
   // assign characters
@@ -123,8 +136,10 @@ function begin_game(game) {
 function character_select(game, action, character_name) {
   if (action == "add" && !(character_name in game.characters_enabled)) {
     game.characters_enabled.push(character_name)
+    console.log(`Added ${character_name}`)
   } else if (action == "remove") {
     game.characters_enabled = game.characters_enabled.filter(x => x != character_name)
+    console.log(`Removed ${character_name}`)
   }
 }
 
@@ -132,21 +147,26 @@ function card_action(game, sub_action, action_type, data) {
   if (sub_action == "peek") {
     if (action_type == "reveal") {
       game.players[data].card.isExposed = true;
+      console.log(`Exposed ${game.players[data].name}`)
     } else if (action_type == "hide") {
       game.players[data].card.isExposed = false;
+      console.log(`Unexposed ${game.players[data].name}`)
     }
   } else if (sub_action == "highlight") {
     if (action_type == "select") {
       game.players[data].card.isHighlighted = true;
+      console.log(`Highlighted ${game.players[data].name}`)
     } else if (action_type == "unselect") {
       game.players[data].card.isHighlighted = false;
+      console.log(`Unhighlighted ${game.players[data].name}`)
     }
   } else if (sub_action == "swap") {
     card_number_1 = data[0]
     card_number_2 = data[1]
     temp_card = game.players[card_number_1].card
-    game.players[card_number_1].card = card_number_2
+    game.players[card_number_1].card = game.players[card_number_2].card
     game.players[card_number_2].card = temp_card
+    console.log(`Swapped ${game.players[card_number_1].name} and ${game.players[card_number_2].name}`)
   }
 }
 
@@ -154,17 +174,21 @@ function player_action(game, sub_action, action_type, data) {
   if (sub_action == "thumb") {
     if (action_type == "stick_out") {
       game.players[data].isThumbOut = true;
+      console.log(`Stuck out thumb ${game.players[data].name}`)
     } else if (action_type == "hide") {
       game.players[data].isThumbOut = false;
+      console.log(`Hid thumb ${game.players[data].name}`)
     }
   } else if (sub_action == "token") {
     if (action_type == "shield") {
       game.players[data].card.tokens.push("shield")
+      console.log(`Gave shield to ${game.players[data].name}`)
 
     } else if (action_type == "random") {
       tokens = ["villager", "tanner", "werewold", "mute", "shame", "nothing"]
-      token = tokens[Math.random() * tokens.length]
+      token = tokens[Math.floor(Math.random() * tokens.length)]
       game.players[data].card.tokens.push(token)
+      console.log(`Gave token ${token} to ${game.players[data].name}`)
     }
   }
 }

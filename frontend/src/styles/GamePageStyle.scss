@@ -1,5 +1,130 @@
-.body {
-    .game-page {
-        
+.game-page {
+    height: 80%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .eyes-closed {
+        height: 100%;
+        width: 100%;
+        background-color: grey;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
+
+    .personal-area {
+        height: 100%;
+        width: 20%;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-right: 10px ridge grey;
+    }
+
+    .play-area {
+        height: 100%;
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card-grid {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .player-area {
+        display: flex;
+        flex-direction: column;
+    }
+    .player-name {
+
+    }
+    .card-area {
+        display: flex;
+        flex-direction: row;
+    }
+    .button-bar {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+    
+    .card {
+        width: auto;
+        height: auto;
+        max-width: 100px;
+        max-height: 100px;
+
+        margin: 5px;
+        padding: 5px;
+        box-sizing: content-box;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        cursor: pointer;
+
+        background-color: rgb(231, 231, 231);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+
+        &.highlighted {
+            background-color: yellow;
+        }
+    }
+
+    .token {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        font-size: 10px;
+        padding-left: 5px;
+        padding-top: 2px;
+        margin: 2px;
+        color: white;
+        background-color: black;
+    }
+
+    }
+    .dropdown-list {
+        position: absolute;
+        z-index: 10;
+        background-color: white;
+        width: max-content;
+    }
+
+    .dropdown-entry {
+        font-size: 10px;
+        border: 1px solid black;
+        padding: 1px;
+        padding-right: 5px;
+    }
+    .dropdown-entry:hover {
+        background-color: grey;
+    }
+    
+    .icon-button {
+        height: min-content;
+        width: min-content;
+        font-size: 20px;
+        color: grey;
+        z-index: 9;
+
+    }
+    .icon-button:hover {
+        opacity: 0.7;
+        
 }

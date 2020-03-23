@@ -1,9 +1,4 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
 
 import { GamePageStore } from './stores/GamePageStore'
 import { SetupPageStore } from './stores/SetupPageStore'
@@ -18,22 +13,20 @@ import { WelcomePageView } from './views/WelcomePageView'
 
 
 const App: React.FC = () => {
+  let url = new URL(window.location.href)
+  let body;
+  if (url.pathname === "/") {
+    body = <WelcomePageView store={new WelcomePageStore({})} />
+  } else if (url.pathname === "/setup") {
+    body = <SetupPageView store={new SetupPageStore({})} />
+  } else if (url.pathname === "/game") {
+    body = <GamePageView store={new GamePageStore({})} />
+  }
+           
   return (
     <div className="App" style={{height: "100%", width: "100%" }}>
       <BasePageView>
-        <Router>
-            <Switch>
-              <Route path="/">
-                <WelcomePageView store={new WelcomePageStore({})} />
-              </Route>
-              <Route path="/setup">
-                <SetupPageView store={new SetupPageStore({})} />
-              </Route>
-              <Route path="/game">
-                <GamePageView store={new GamePageStore({})} />
-              </Route>
-            </Switch>
-        </Router>
+        {body}
       </BasePageView>
     </div>
   );

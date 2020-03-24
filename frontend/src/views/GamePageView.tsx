@@ -30,13 +30,16 @@ export class GamePageView extends React.Component<IProps> {
                     <div className="personal-area">
                         <h2>Your initial card:</h2>
                         <p>{store.initialCharacter}</p>
+                        <div className="section-break" />
                         <h2>Your tokens:</h2>
                         {store.tokens.map(token => <p>{token}</p>)}
-                        <h2>Enabled Characters</h2>
+                        <div className="section-break" />
+                        <h2>Enabled Characters:</h2>
                         {store.gameState.characters_enabled.reduce((n: any,a: any) =>
                             a + ", " +  n
                         , "")}
                         <br /> <br />
+                        <div className="section-break" />
                         <Button variant="primary"
                             onClick={ () => store.toggleThumb(store.playerCardNumber) }>
                                 {store.isThumbOut ? "Hide Thumb" : "Stick Out Thumb" }

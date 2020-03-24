@@ -20,12 +20,21 @@
     .personal-area {
         height: 100%;
         width: 20%;
-        padding: 20px;
+        padding: 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         border-right: 10px ridge grey;
+        border: 8px ridge #1E4CE1;
+        background-color: rgb(200, 200, 200);
+    }
+
+    .section-break {
+        height: 0px;
+        width: 80%;
+        margin: 1em auto;
+        border-top: 1px solid black;
     }
 
     .play-area {
@@ -35,6 +44,9 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+
+        background-color: rgb(200, 200, 200);
+        border: 8px ridge #E1B31E;
     }
 
     .card-grid {
@@ -75,8 +87,6 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-
-        cursor: pointer;
 
         background-color: rgb(231, 231, 231);
         box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);

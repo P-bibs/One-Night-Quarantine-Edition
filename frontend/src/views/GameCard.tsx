@@ -119,7 +119,7 @@ export class GameCard extends React.Component<IProps> {
                         <div className="dropdown-list">
                             <div className="dropdown-entry"
                                 onClick={() => store.swapCards(this.props.cardNumber)}>
-                                Swap
+                                {!(store.currentlySwapping == null) ? `Swap with ${store.gameState.players[store.currentlySwapping].name}` : "Swap"}
                             </div>
                             <div className="dropdown-entry"
                                 onClick={() => store.togglePeekCard(this.props.cardNumber)}>

@@ -211,7 +211,7 @@ function player_action(game, sub_action, action_type, data) {
       console.log(`Gave shield to ${game.players[data].name}`)
 
     } else if (action_type == "random") {
-      tokens = ["villager", "tanner", "werewold", "mute", "shame", "nothing"]
+      tokens = ["villager", "tanner", "werewolf", "mute", "shame", "nothing"]
       token = tokens[Math.floor(Math.random() * tokens.length)]
       game.players[data].card.tokens.push(token)
       console.log(`Gave token ${token} to ${game.players[data].name}`)

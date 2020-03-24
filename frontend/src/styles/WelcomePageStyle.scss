@@ -20,4 +20,12 @@
         justify-content: space-between;
         align-items: center;
     }
+
+    .spacer {
+        flex-grow: 2;
+    }
+    .disclaimer {
+        color: grey;
+        font-size: 10px;
+    }
 }

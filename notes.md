@@ -37,6 +37,7 @@
     * "protect"
       * arg: player_number
     * "random"
+    * "poke"
 
 * "game_state_update"
   * arg: game_state

@@ -215,6 +215,9 @@ function player_action(game, sub_action, action_type, data) {
       token = tokens[Math.floor(Math.random() * tokens.length)]
       game.players[data].card.tokens.push(token)
       console.log(`Gave token ${token} to ${game.players[data].name}`)
+    } else if (action_type == "poke") {
+      game.players[data].card.tokens.push("poked")
+      console.log(`Poked ${game.players[data].name}`)
     }
   }
 }

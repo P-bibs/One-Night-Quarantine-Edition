@@ -137,16 +137,31 @@ export class GameCard extends React.Component<IProps> {
                                 onClick={() => store.giveToken(this.props.cardNumber, "random")}>
                                 Give Artifact
                             </div>
+                            <div className="dropdown-entry"
+                                onClick={() => store.giveToken(this.props.cardNumber, "poke")}>
+                                Poke
+                            </div>
                         </div>
                     </div>
                     :
                     ""
                     }
-                    {card.tokens.map((tokenName: any) => 
-                        <div className="token">
-                            {tokenName === "shield" ? <MdSecurity /> : ""}
-                        </div>
-                    )}
+                    {card.tokens.map((tokenName: any) => {
+                        if (tokenName === "shield") {
+                            return (
+                                <div className="token">
+                                    <MdSecurity />
+                                </div>
+                            )
+                        } else if (tokenName === "poked") {
+                            return
+                        } else {
+                            return (
+                                <div className="token">
+                                </div>
+                            )
+                        }
+                    })}
                 </div>
             </div>
         )
